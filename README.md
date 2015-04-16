@@ -1,6 +1,8 @@
 # gulp-exports
 Expose module.exports to a global object, like `window` in the browser envrionment.
 
+## Deprecated
+use [gulp-expose](https://github.com/zoubin/gulp-expose) instead
 ## install
 ```
 npm install --save-dev gulp-exports
