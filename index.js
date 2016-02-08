@@ -5,7 +5,7 @@ module.exports = gulpExports;
 function gulpExports(host, exports) {
     if (!exports) {
         exports = host;
-        host = 'this';
+        host = '(window || self)';
     }
     if (typeof exports === 'string') {
         exports = (function (exports) {
@@ -33,20 +33,20 @@ function gulpExports(host, exports) {
 }
 
 function wrap(code, host, exports) {
-    return [
-        '(function (module, exports) {',
-        '   var _exports = module.exports;',
-        '   module.exports = module["' + exports + '"] || {};',
-        '   exports = module["' + exports + '"] = module.exports;',
-        '   /****** code begin *********/',
-        code,
-        '   /****** code end *********/',
-        '   if (typeof _exports === "undefined") {',
-        '       delete module.exports;',
-        '   } else if ("' + exports +'" !== "exports") {',
-        '       module.exports = _exports;',
-        '   }',
-        '}).call(' + [host, host, host + '["' + exports + '"]'].join(', ') + ');'
-    ].join('\n');
+  return `
+    (function() {
+      var module = { exports: {} };
+
+      (function (exports) {
+        /****** code begin *********/
+
+        ${ code }
+
+        /****** code end *********/
+      }).call(module.exports, module.exports);
+
+      ${ host }['${ exports }'] = module.exports;
+    }())
+  `;
 }
 
